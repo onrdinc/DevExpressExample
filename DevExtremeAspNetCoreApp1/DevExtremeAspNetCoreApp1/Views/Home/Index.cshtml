@@ -1,0 +1,72 @@
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    <link href="~/css/datagrid.css" rel="stylesheet" />
+
+}   
+
+@using DevExtremeAspNetCoreApp1.Models
+@model List<Country>
+
+  
+
+    <div id="dataGrid">
+       
+    </div>
+
+    <div id="pie-chart">
+
+    </div>
+
+<script>
+
+    $(function () {
+        $("#dataGrid").dxDataGrid({
+            // ...
+            dataSource:@Html.Raw(Json.Serialize(Model)),
+            columns: [
+                // ...
+                {
+                    dataField: "name.official",
+                    caption :"Ülke Ýsmi",
+                    dataType: "string",
+                    width: 240,
+                },
+                {
+                    dataField: "unMember",
+                    caption: "Birleþmiþ Milletler Üyeliði",
+                    dataType: "string",
+                    width: 240,
+                },
+                {
+                    dataField: "region",
+                    caption: "Bölge",   
+                    dataType: "string",
+                    width: 240,
+                },
+                {
+                    dataField: "population",
+                    caption: "Nüfus",
+                    dataType: "long",
+                    width: 240,
+                },
+                {
+                    dataField: "capital",
+                    caption: "Baþkent",
+                    dataType: "string",
+                    width: 240,
+                }, 
+            ],
+           
+            filterRow: { visible: true },
+            searchPanel: { visible: true }
+        });
+    });
+
+
+</script>
+
+
+
+
+

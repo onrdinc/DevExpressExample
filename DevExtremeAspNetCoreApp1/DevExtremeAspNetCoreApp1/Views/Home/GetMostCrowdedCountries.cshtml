@@ -1,0 +1,256 @@
+﻿@using DevExtremeAspNetCoreApp1.Models.CountryDtos;
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+}
+@model List<Country>
+
+
+<div class="row">
+    <div class="col-md-3">
+        @(Html.DevExtreme().DataGrid()
+    .ID("gridContainer")
+    .ShowBorders(true)
+    .DataSource(Model)
+    .KeyExpr("ID")
+    .Columns(c => {
+        c.Add().DataField("Region").Caption("Kıta");
+        c.Add().DataField("TotalPopulation").Caption("Nufüs");
+
+    })
+         .DataSource(d => d.Mvc().Controller("Home").LoadAction("Get"))
+)
+    </div>
+
+    <div class="col-md-5">
+        @(Html.DevExtreme().Chart()
+    .ID("chart")
+    .Series(s => s
+        .Add()
+        .ArgumentField("Region")
+        .ValueField("TotalPopulation")
+        .Name("Kıta Nufüsları")
+        .Type(SeriesType.Bar)
+        .Color("#ffaa66")
+
+
+    )
+        .DataSource(d => d.Mvc().Controller("Home").LoadAction("Get"))
+)
+    </div>
+    <div class="col-md-4">
+
+        @(Html.DevExtreme().PieChart()
+    .ID("pie")
+    .Palette(VizPalette.SoftPastel)
+    .Type(PieChartType.Doughnut)
+    .Title("Kıtaların ve Bölgelerin Nüfusu")
+    .Tooltip(t => t
+        .Enabled(true)
+        .Format(Format.Millions)
+        .CustomizeTooltip(@<text>
+            function(arg) {
+                return {
+                    text: arg.valueText + " - " + (arg.percent * 100).toFixed(2) + "%"
+                };
+            }
+        </text>)
+    )
+    .Legend(l => l
+        .HorizontalAlignment(HorizontalAlignment.Right)
+        .VerticalAlignment(VerticalEdge.Top)
+        .Margin(0)
+    )
+    .Export(e => e.Enabled(true))
+    .Series(s => s
+        .Add()
+        .ArgumentField("Region")
+        .ValueField("TotalPopulation")
+        .Label(l => l
+            .Visible(true)
+            .Format(Format.Millions)
+            .Connector(c => c.Visible(true))
+        )
+    )
+        .DataSource(d => d.Mvc().Controller("Home").LoadAction("Get"))
+)
+
+    </div>
+
+</div>
+
+<br />
+
+
+
+<div class="row">
+    @(Html.DevExtreme().DataGrid<Country>()
+    .DataSource(Model, new[] { "ID" })
+    .Selection(s => s.Mode(SelectionMode.Single))
+    .Paging(p => p.PageSize(10))
+    .HoverStateEnabled(true)
+    .ShowBorders(true)
+    .AllowColumnReordering(true)
+    .Columns(columns => {
+
+        columns.AddFor(m => m.name.official).Caption("Ülke");
+
+        columns.AddFor(m => m.region).Caption("Bölge");
+
+        columns.AddFor(m => m.population).Caption("Nufüs");
+    })
+    .DataSource(d => d.Mvc().Controller("Home").LoadAction("GetData"))
+
+    .OnSelectionChanged("selection_changed")
+)
+
+    <div id="employeeInfo">
+        <span class="countryName"></span>
+        <span class="countryRegion"></span>
+        <span class="countryPopulation"></span>
+    </div>
+
+    <script>
+        function selection_changed(selectedItems) {
+            var data = selectedItems.selectedRowsData[0];
+            if (data) {
+                $(".countryName").text(data.name.official);
+                $(".countryRegion").text(data.region);
+                $(".countryPopulation").text(data.population);
+            }
+        }
+    </script>
+
+</div>
+
+<div class="row">
+    @(Html.DevExtreme().DataGrid<Country>()
+    .ID("gridContainer1")
+    .Columns(columns => {
+        columns.AddFor(m => m.name.official).Caption("Ülke");
+
+        columns.AddFor(m => m.capital).Caption("Başkent");
+
+        columns.AddFor(m => m.population).Caption("Nufüs");
+        columns.AddFor(m => m.region).Caption("Bölge")
+    .GroupIndex(0);
+    })
+    .AllowColumnReordering(true)
+    .Width("100%")
+    .ShowBorders(true)
+    .Grouping(grouping => grouping.AutoExpandAll(true))
+    .SearchPanel(searchPanel => searchPanel.Visible(true))
+    .GroupPanel(groupPanel => groupPanel.Visible(true))
+    .Paging(paging => paging.PageSize(10))
+    .DataSource(d => d.Mvc().Controller("Home").LoadAction("GetData"))
+)
+
+    <div class="options">
+        <div class="caption">Options</div>
+        <div class="option">
+            @(Html.DevExtreme().CheckBox()
+            .ID("autoExpand")
+            .Text("Expand All Groups")
+            .Value(true)
+            .OnValueChanged(@<text>
+                function(data) {
+                    var dataGrid = $("#gridContainer1").dxDataGrid("instance");
+                    dataGrid.option("grouping.autoExpandAll", data.value);
+                }
+            </text>)
+        )
+        </div>
+    </div>
+
+</div>
+
+
+
+<div class="row">
+    @(Html.DevExtreme().DataGrid<CountryGetDto>()
+    .DataSource(Model, new[] { "ID" })
+    .Paging(p => p.PageSize(10))
+    .HoverStateEnabled(true)
+    .ShowBorders(true)
+    .AllowColumnReordering(true)
+     .ShowColumnLines(false)
+    .ShowRowLines(true)
+    .RowAlternationEnabled(true)
+    .Columns(columns => {
+
+        columns.AddFor(m => m.Name).Caption("Ülke");
+
+        columns.AddFor(m => m.ISO2).Caption("ISO2");
+
+        columns.AddFor(m => m.ISO3).Caption("ISO3");
+    })
+    .DataSource(d => d.Mvc().Controller("Home").LoadAction("GetCountry"))
+
+)
+</div>
+
+<div>
+    <div id="data-grid-demo">
+        @(Html.DevExtreme().DataGrid<CountryGetDto>()
+        .ID("gridContainer3")
+        .Paging(p => p.PageSize(10))
+        .HoverStateEnabled(true)
+        .ShowBorders(true)
+        .ShowRowLines(true)
+        .RowAlternationEnabled(true)
+
+        .Editing(e => e.Mode(GridEditMode.Popup).UseIcons(true)
+            .AllowUpdating(true)
+            .AllowAdding(true)
+            .AllowDeleting(true)
+            .Popup(p => p
+                .Title("Ülke Bilgileri")
+                .ShowTitle(true)
+                .Width(700)
+                .Height(220)
+            )
+            .Form(f => f.Items(items => {
+                items.AddGroup()
+                    .ColCount(3)
+                    .ColSpan(2)
+                    .Items(groupItems => {
+                        groupItems.AddSimpleFor(m => m.Name);
+                        groupItems.AddSimpleFor(m => m.ISO2);
+                        groupItems.AddSimpleFor(m => m.ISO3);
+                    });
+
+            }))
+        )
+        .Columns(columns => {
+            columns.AddFor(m => m.Name);
+
+            columns.AddFor(m => m.ISO2);
+
+            columns.AddFor(m => m.ISO3);
+
+
+
+            //columns.AddFor(m => m.StateID)
+            //    .Width(125)
+            //    .Lookup(lookup => lookup
+            //        .DataSource(d => d.Mvc().Controller("DataGridStatesLookup").LoadAction("Get").Key("ID"))
+            //        .DisplayExpr("Name")
+            //        .ValueExpr("ID")
+            //    );
+
+        })
+        .DataSource(d => d.Mvc()
+            .Controller("Home")
+            .LoadAction("GetCountry")
+            .InsertAction("CountrySave")
+            .DeleteAction("DeleteCountry")
+            .UpdateAction("UpdateCountry")
+            .Key("Id")
+
+        )
+    )
+    </div>
+
+</div>
+

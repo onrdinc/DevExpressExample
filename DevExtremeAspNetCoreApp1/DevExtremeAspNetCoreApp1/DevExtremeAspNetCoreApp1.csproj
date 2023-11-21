@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="Models\ORMDataModel1.xpo" />
+      <None Remove="Models\ORMDataModel1.xpo.diagram" />
+    </ItemGroup>
+
+    <ItemGroup>
+    <PackageReference Include="DevExpress.Xpo" Version="23.1.6" />
+    <PackageReference Include="DevExtreme.AspNet.Data" Version="2.9.2" />
+    <PackageReference Include="DevExtreme.AspNet.Core" Version="23.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
+    </ItemGroup>
+
+    <ProjectExtensions><VisualStudio><UserProperties TemplateFeatures="NETCORE" /></VisualStudio></ProjectExtensions>
+
+</Project>
